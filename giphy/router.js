@@ -23,4 +23,22 @@ router.get('/', (req, res) => {
     })
 })
 
+router.post('/', jsonParser, (req, res) => {
+  const giphyURLS = [];
+  const searchTerm = req.body.searchTerm.trim().replace(/ /g, '+');
+
+  console.log(`${API_BASE_URL}api_key=${API_KEY}&q=${searchTerm}&limit=${searchLimit}&rating=${rating}`)
+
+  fetch(`${API_BASE_URL}api_key=${API_KEY}&q=${req.body.searchTerm}&limit=${searchLimit}&rating=${rating}`)
+    .then(res => res.json())
+    .then(data => {
+      data.data.map(gif => giphyURLS.push(gif.images.original.url));
+      console.log(giphyURLS);
+      res.send(giphyURLS);
+    })
+    .catch(err => {
+      res.status(500).send(err.message);
+    })
+})
+
 module.exports = {router};
